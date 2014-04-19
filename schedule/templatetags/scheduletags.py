@@ -1,11 +1,16 @@
 import datetime
+from urllib import quote
+
 from django.conf import settings
 from django import template
 from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404
 from django.utils.dateformat import format
-from schedule.conf.settings import CHECK_EVENT_PERM_FUNC, CHECK_CALENDAR_PERM_FUNC
+
+from schedule.conf.settings import CHECK_EVENT_PERM_FUNC, CHECK_CALENDAR_PERM_FUNC, GET_EVENTS_FUNC
 from schedule.models import Calendar
-from schedule.periods import weekday_names, weekday_abbrs
+from schedule.periods import weekday_names, weekday_abbrs, Month
+from schedule.utils import coerce_date_dict
 
 register = template.Library()
 
@@ -303,3 +308,45 @@ def _cook_slots(period, increment, width, height):
 @register.simple_tag
 def hash_occurrence(occ):
     return '%s_%s' % (occ.start.strftime('%Y%m%d%H%M%S'), occ.event.id)
+
+
+@register.inclusion_tag("schedule/_calendar_ajax.html", takes_context = True)
+def calendar_ajax(context, calendar_slug):
+    calendar = get_object_or_404(Calendar, slug=calendar_slug)
+    date = coerce_date_dict(context['request'].GET)
+    if date:
+        try:
+            date = datetime.datetime(**date)
+        except ValueError:
+            raise Http404
+    else:
+        date = datetime.datetime.now()
+    event_list = GET_EVENTS_FUNC(context['request'], calendar)
+    periods = [Month]
+    period_objects = dict([(period.__name__.lower(), period(event_list, date)) for period in periods])
+    context = {
+            'date': date,
+            'periods': period_objects,
+            'calendar': calendar,
+            'weekday_names': weekday_names,
+            'here':quote(context['request'].get_full_path()),
+            'MEDIA_URL': settings.MEDIA_URL,
+        }
+    return context
+
+
+@register.inclusion_tag("schedule/_calendar_ajax_head.html")
+def calendar_ajax_head(calendar_slug):
+    calendar = get_object_or_404(Calendar, slug=calendar_slug)
+    context = {'calendar': calendar}
+    return context
+
+
+@register.inclusion_tag("schedule/_calendar_upcoming.html")
+def calendar_upcoming(calendar_slug, num_upcoming_events=5):
+    calendar = get_object_or_404(Calendar, slug=calendar_slug)
+    events = []
+    if num_upcoming_events > 0:
+        events = list(calendar.occurrences_after())[:num_upcoming_events]
+    context = {'events': events}
+    return context

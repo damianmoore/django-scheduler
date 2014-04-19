@@ -1,0 +1,12 @@
+{% load scheduletags %}
+<div class="tablewrapper">
+    <div class="prevnext">
+        <span id="link_prev">&#9664;</span>
+        <span id="current_month">{{ date.month }}</span>/<span id="current_year">{{ date.year }}</span>
+        <span id="link_next">&#9654;</span>
+    </div>
+
+    <div id="calendar_container">
+        {% month_table calendar periods.month "regular" %}
+    </div>
+</div>

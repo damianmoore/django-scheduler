@@ -1,0 +1,56 @@
+<script type="text/javascript">
+    var current_month = null;
+    var current_year = null;
+    var load_url = '';
+    var ajax_load = 'Loading...';
+
+    function add_tooltips() {
+        $('.calendar .busy .header').tooltip();
+    }
+
+    function load_calendar(year, month) {
+        var load_url = '{% url 'month_calendar' calendar.slug %}?year='+year+'&month='+month+'&day=1&hour=0&minute=0&second=0';
+        $('#calendar_container').animate({opacity:0}, function() {
+            $(this).load(load_url, function() {
+                add_tooltips();
+                $(this).animate({opacity:1});
+            });
+        });
+    }
+
+    $(document).ready(function() {
+        var current_month = parseInt($('#current_month').html(), 10);
+        var current_year = parseInt($('#current_year').html(), 10);
+        add_tooltips();
+
+        $('.calendar .busy .header').tooltip({
+            events: {
+                tooltip: "mouseenter,mouseout"
+            },
+            position: "top right"
+        });
+
+        $('#link_prev').click(function() {
+            if (current_month == 1) {
+                current_month = 12;
+                current_year--;
+                $('#current_year').html(current_year);
+            } else {
+                current_month--;
+            }
+            $('#current_month').html(current_month);
+            load_calendar(current_year, current_month);
+        });
+        $('#link_next').click(function() {
+            if (current_month == 12) {
+                current_month = 1;
+                current_year++;
+                $('#current_year').html(current_year);
+            } else {
+                current_month++;
+            }
+            $('#current_month').html(current_month);
+            load_calendar(current_year, current_month);
+        });
+    });
+</script>

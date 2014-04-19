@@ -1,15 +1,19 @@
 # -*- coding: utf-8 -*-
+import datetime
 import pytz
+
+from cms.models import CMSPlugin
 from django.contrib.contenttypes import generic
 from django.db import models
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
-import datetime
-from schedule.utils import EventListManager
 from django.utils import timezone
+
+from schedule.utils import EventListManager
 
 
 class CalendarManager(models.Manager):
@@ -136,6 +140,7 @@ class Calendar(models.Model):
 
     name = models.CharField(_("name"), max_length=200)
     slug = models.SlugField(_("slug"), max_length=200)
+    site = models.ForeignKey(Site, null=True)
     objects = CalendarManager()
 
     class Meta:
@@ -180,6 +185,17 @@ class Calendar(models.Model):
 
     def add_event_url(self):
         return reverse('calendar_create_event', args=[self.slug])
+
+
+class CalendarPluginModel(CMSPlugin):
+    calendar = models.ForeignKey(Calendar, related_name='plugins')
+    num_upcoming_events = models.PositiveIntegerField(default=5)
+
+    class Meta:
+        app_label = 'schedule'
+
+    def __unicode__(self):
+        return self.calendar.name
 
 
 class CalendarRelationManager(models.Manager):

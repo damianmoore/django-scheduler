@@ -1,0 +1,5 @@
+{% load scheduletags %}
+
+{% calendar_ajax_head 'default' %}
+{% calendar_ajax 'default' %}
+{% calendar_upcoming 'default' instance.num_upcoming_events %}

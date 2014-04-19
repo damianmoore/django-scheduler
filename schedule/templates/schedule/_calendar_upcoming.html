@@ -1,0 +1,10 @@
+<div id="upcoming_events">
+    {% if events %}
+        <h3>Upcoming events:</h3>
+    {% endif %}
+    <table>
+        {% for event in events %}
+            <tr><td>{{ event.start|date:"j M Y H:i" }}</td><td><b>{{ event.title }}</b><br />{{ event.description|linebreaksbr }}</td></tr>
+        {% endfor %}
+    </table>
+</div>
