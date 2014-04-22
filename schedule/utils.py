@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import wraps
 import pytz
 import heapq
@@ -5,6 +6,7 @@ from annoying.functions import get_object_or_None
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.utils import timezone
+
 from schedule.conf.settings import CHECK_EVENT_PERM_FUNC, CHECK_CALENDAR_PERM_FUNC
 
 
@@ -137,3 +139,12 @@ def coerce_date_dict(date_dict):
             break
     return modified and ret_val or {}
 
+
+def count_user_events(request):
+    from schedule.models.events import Event
+    try:
+        user_site = request.user.userprofile.site
+        #import ipdb; ipdb.set_trace()
+        return Event.objects.filter(calendar__site=user_site, end__gt=datetime.now()).count()
+    except:
+        return 0
