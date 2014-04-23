@@ -188,7 +188,17 @@ class Calendar(models.Model):
 
 
 class CalendarPluginModel(CMSPlugin):
-    calendar = models.ForeignKey(Calendar, related_name='plugins')
+    calendar = models.ForeignKey(Calendar, related_name='calendar_plugins')
+
+    class Meta:
+        app_label = 'schedule'
+
+    def __unicode__(self):
+        return self.calendar.name
+
+
+class CalendarUpcomingPluginModel(CMSPlugin):
+    calendar = models.ForeignKey(Calendar, related_name='calendar_upcoming_plugins')
     num_upcoming_events = models.PositiveIntegerField(default=5)
 
     class Meta:

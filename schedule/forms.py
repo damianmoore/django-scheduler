@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from schedule.models import Event, Occurrence
+from schedule.models import Event, Occurrence, CalendarPluginModel
 
 
 class SpanForm(forms.ModelForm):
@@ -34,3 +34,17 @@ class OccurrenceForm(SpanForm):
     class Meta:
         model = Occurrence
         exclude = ('original_start', 'original_end', 'event', 'cancelled')
+
+
+class CalendarPluginForm(forms.ModelForm):
+    class Meta:
+        model = CalendarPluginModel
+
+    def __init__(self, *args, **kwargs):
+        # Limit the calendar queryset to ones that have a site same as the page it's being put on
+        self.request = kwargs.pop('request', None)
+        super(CalendarPluginForm, self).__init__(*args, **kwargs)
+        page_site = self.request.current_page.site
+        self.fields['calendar'].queryset = self.fields['calendar'].queryset.filter(site=page_site)
+        if len(self.fields['calendar'].queryset) == 1:
+            self.fields['calendar'].initial = self.fields['calendar'].queryset[0]

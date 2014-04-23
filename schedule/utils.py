@@ -144,7 +144,6 @@ def count_user_events(request):
     from schedule.models.events import Event
     try:
         user_site = request.user.userprofile.site
-        #import ipdb; ipdb.set_trace()
         return Event.objects.filter(calendar__site=user_site, end__gt=datetime.now()).count()
     except:
         return 0

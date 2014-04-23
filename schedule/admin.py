@@ -53,7 +53,7 @@ class EventAdminOptions(admin.ModelAdmin):
         return ModelFormMetaClass
 
     def queryset(self, request):
-        # Only show users events for their own calendars (if not superuser)
+        # Only show user's events for their own calendars (if not superuser)
         qs = super(EventAdminOptions, self).queryset(request)
         if not request.user.is_superuser:
             user_site = request.user.userprofile.site
