@@ -2,7 +2,7 @@ from cms.plugin_base import CMSPluginBase
 from cms.plugin_pool import plugin_pool
 
 from .forms import CalendarPluginForm
-from .models.calendars import CalendarPluginModel, CalendarUpcomingPluginModel
+from .models.calendars import CalendarPluginModel
 
 
 class CalendarCMSPluginBase(CMSPluginBase):
@@ -29,11 +29,3 @@ class CalendarPlugin(CalendarCMSPluginBase):
     render_template = 'schedule/plugin_calendar.html'
 
 plugin_pool.register_plugin(CalendarPlugin)
-
-
-class CalendarUpcomingPlugin(CalendarCMSPluginBase):
-    model = CalendarUpcomingPluginModel
-    name = ('Calendar Upcoming')
-    render_template = 'schedule/plugin_calendar_upcoming.html'
-
-plugin_pool.register_plugin(CalendarUpcomingPlugin)
