@@ -44,7 +44,10 @@ class CalendarPluginForm(forms.ModelForm):
         # Limit the calendar queryset to ones that have a site same as the page it's being put on
         self.request = kwargs.pop('request', None)
         super(CalendarPluginForm, self).__init__(*args, **kwargs)
-        page_site = self.request.user.userprofile.site
+        try:
+            page_site = self.request.user.userprofile.site
+        except:
+            page_site = None
         if page_site:
             self.fields['calendar'].queryset = self.fields['calendar'].queryset.filter(site=page_site)
         if len(self.fields['calendar'].queryset) == 1:
