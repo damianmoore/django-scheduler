@@ -39,6 +39,7 @@ class OccurrenceForm(SpanForm):
 class CalendarPluginForm(forms.ModelForm):
     class Meta:
         model = CalendarPluginModel
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         # Limit the calendar queryset to ones that have a site same as the page it's being put on

@@ -1,7 +1,7 @@
 import json
 import pytz
 import datetime
-from urllib import quote
+from urllib.parse import quote
 
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required

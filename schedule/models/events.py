@@ -3,7 +3,7 @@ from django.conf import settings as django_settings
 import pytz
 from dateutil import rrule
 
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.db import models
 from django.db.models import Q
 from django.contrib.contenttypes.models import ContentType
@@ -78,9 +78,6 @@ class Event(models.Model):
         []
 `
         """
-        if self.pk:
-            # performance booster for occurrences relationship
-            Event.objects.select_related('occurrence').get(pk=self.pk)
         persisted_occurrences = self.occurrence_set.all()
         occ_replacer = OccurrenceReplacer(persisted_occurrences)
         occurrences = self._get_occurrence_list(start, end)
@@ -322,7 +319,7 @@ class EventRelation(models.Model):
     event = models.ForeignKey(Event, verbose_name=_("event"))
     content_type = models.ForeignKey(ContentType)
     object_id = models.IntegerField()
-    content_object = generic.GenericForeignKey('content_type', 'object_id')
+    content_object = GenericForeignKey('content_type', 'object_id')
     distinction = models.CharField(_("distinction"), max_length=20, null=True)
 
     objects = EventRelationManager()

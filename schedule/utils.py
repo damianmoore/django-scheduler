@@ -38,7 +38,7 @@ class EventListManager(object):
 
         for generator in generators:
             try:
-                heapq.heappush(occurrences, (generator.next(), generator))
+                heapq.heappush(occurrences, (generator.__next__(), generator))
             except StopIteration:
                 pass
 
@@ -49,7 +49,7 @@ class EventListManager(object):
             generator = occurrences[0][1]
 
             try:
-                next = heapq.heapreplace(occurrences, (generator.next(), generator))[0]
+                next = heapq.heapreplace(occurrences, (generator.__next__(), generator))[0]
             except StopIteration:
                 next = heapq.heappop(occurrences)[0]
             yield occ_replacer.get_occurrence(next)

@@ -14,6 +14,7 @@ class CalendarAdminOptions(admin.ModelAdmin):
 class EventAdminForm(forms.ModelForm):
     class Meta:
         model = Event
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         # Limit calendar choice to request.user and pre-select
