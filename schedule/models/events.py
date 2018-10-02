@@ -48,7 +48,7 @@ class Event(models.Model):
         verbose_name_plural = _('events')
         app_label = 'schedule'
 
-    def __unicode__(self):
+    def __str__(self):
         date_format = u'%s' % ugettext("DATE_FORMAT")
         return ugettext('%(title)s: %(start)s - %(end)s') % {
             'title': self.title,
@@ -329,7 +329,7 @@ class EventRelation(models.Model):
         verbose_name_plural = _("event relations")
         app_label = 'schedule'
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s(%s)-%s' % (self.event.title, self.distinction, self.content_object)
 
 
@@ -417,7 +417,7 @@ class Occurrence(models.Model):
             'second': self.start.second,
         })
 
-    def __unicode__(self):
+    def __str__(self):
         return ugettext("%(start)s to %(end)s") % {
             'start': self.start,
             'end': self.end,

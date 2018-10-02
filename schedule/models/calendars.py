@@ -148,7 +148,7 @@ class Calendar(models.Model):
         verbose_name_plural = _('calendar')
         app_label = 'schedule'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @property
@@ -194,7 +194,7 @@ class CalendarPluginModel(CMSPlugin):
     class Meta:
         app_label = 'schedule'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.calendar.name
 
 
@@ -254,5 +254,5 @@ class CalendarRelation(models.Model):
         verbose_name_plural = _('calendar relations')
         app_label = 'schedule'
 
-    def __unicode__(self):
+    def __str__(self):
         return u'%s - %s' % (self.calendar, self.content_object)

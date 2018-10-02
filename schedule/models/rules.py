@@ -82,6 +82,6 @@ class Rule(models.Model):
                 param_dict.append(param)
         return dict(param_dict)
 
-    def __unicode__(self):
+    def __str__(self):
         """Human readable string for Rule"""
         return 'Rule %s params %s' % (self.name, self.params)
